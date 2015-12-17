@@ -16,7 +16,7 @@ public class FileEncAndDec {
 		File decFile = new File("C:/Users/Lenovo/Desktop/dec.txt");// 解密文件
 
 		try {
-			//encFile(srcFile, encFile);
+			encFile(srcFile, encFile);
 			decFile(encFile, decFile);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
