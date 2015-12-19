@@ -16,14 +16,9 @@
   http://www.springframework.org/schema/mvc  
   http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
   
-  <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
-  	<property name="interceptors">
-  		<list>
-  			<ref bean="authIntercptor"/>
-  		</list>
-  	</property>
-  </bean>
   
-  <bean id="authIntercptor" class="com.laozhang.auth.AuthInterceptor" />
+  <mvc:interceptors>
+  		<bean class="com.laozhang.auth.AuthInterceptor"></bean>
+  </mvc:interceptors>
   
 </beans>
