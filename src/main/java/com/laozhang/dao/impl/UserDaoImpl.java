@@ -1,5 +1,7 @@
 package com.laozhang.dao.impl;
 
+import java.util.List;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -39,6 +41,10 @@ public class UserDaoImpl implements IUserDao {
 	public int updateByPrimaryKey(User record) {
 		int count = sqlSession.update("userMapper.updateByPrimaryKey", record);
 		return count;
+	}
+
+	public List<User> getAll() {
+		return sqlSession.selectList("userMapper.getAll");
 	}
 
 }

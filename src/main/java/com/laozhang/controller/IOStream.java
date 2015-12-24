@@ -1,13 +1,24 @@
 package com.laozhang.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.plaf.multi.MultiFileChooserUI;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +28,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.laozhang.domain.User;
+import com.laozhang.service.IUserService;
+
 /**
  * 上传下载
  * @author Lenovo
@@ -25,6 +39,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/file")
 public class IOStream {
+	
+	@Autowired
+	private IUserService service;
 	
 	@RequestMapping(value = "toUploadFileJsp", method = RequestMethod.GET)
 	public ModelAndView toUploadFileJsp(HttpServletRequest request, HttpServletResponse response) {
@@ -84,5 +101,52 @@ public class IOStream {
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * excel下载
+	 * @param response
+	 * @throws IOException
+	 */
+	@RequestMapping(value = "getExcel", method = RequestMethod.GET)
+	public void getExcel(HttpServletResponse response) throws IOException {
+		//创建Excel
+		//XSSFWorkbook book = new XSSFWorkbook();
+		HSSFWorkbook book = new HSSFWorkbook();
+		//添加sheet
+		//XSSFSheet sheet = book.createSheet();
+		HSSFSheet sheet = book.createSheet();
+		//首行
+		//XSSFRow firstRow = sheet.createRow(0);
+		HSSFRow firstRow = sheet.createRow(0);
+		//XSSFCell firstRow_cell = firstRow.createCell(0);
+		HSSFCell firstRow_cell = firstRow.createCell(0);
+		firstRow_cell.setCellValue("用户列表");
+		//设置表头
+		//XSSFRow headerRow = sheet.createRow(1);
+		HSSFRow headerRow = sheet.createRow(1);
+		headerRow.createCell(0).setCellValue("编号");
+		headerRow.createCell(1).setCellValue("用户名");
+		headerRow.createCell(2).setCellValue("密码");
+		headerRow.createCell(3).setCellValue("年龄");
+		//写入数据
+		List<User> users = service.getAll();
+		if (null != users && users.size() > 0) {
+			for (int i = 0; i < users.size(); i++) {
+				User user = users.get(i);
+				//XSSFRow row = sheet.createRow(i + 2);
+				HSSFRow row = sheet.createRow(i + 2);
+				row.createCell(0).setCellValue(user.getId().toString());
+				row.createCell(1).setCellValue(user.getUserName());
+				row.createCell(2).setCellValue(user.getPassword());
+				row.createCell(3).setCellValue(user.getAge().toString());
+			}
+		}
+		response.setContentType("application/octet-stream;charset=UTF-8");
+		response.setHeader("Content-disposition", "attachment;filename=" + "users.xlsx");
+		ServletOutputStream out = response.getOutputStream();
+		book.write(out);
+		out.close();
+		book.close();
 	}
 }
