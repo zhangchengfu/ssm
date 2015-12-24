@@ -25,4 +25,16 @@ public class UserServiceImpl implements IUserService {
 		return dao.getAll();
 	}
 
+	public void addUser(User user) {
+		dao.insertSelective(user);
+	}
+
+	public void deleteUser(int id) {
+		dao.deleteByPrimaryKey(id);
+	}
+
+	public void updateUser(User user) {
+		dao.updateByPrimaryKeySelective(user);
+	}
+
 }

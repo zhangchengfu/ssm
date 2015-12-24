@@ -59,7 +59,7 @@ public class IOStream {
 	 */
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 	@ResponseBody
-	public String uploadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String uploadFile(MultipartFile[] files, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String ret = "";
 		//创建一个通用的多部分解析器
 		CommonsMultipartResolver multiResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -68,9 +68,10 @@ public class IOStream {
 			//转换成多部分request
 			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;
 			//取得request中的所有文件名
-			Iterator<String> iter = multiRequest.getFileNames();
-			while(iter.hasNext()) {
-				MultipartFile file = multiRequest.getFile(iter.next());
+			//Iterator<String> iter = multiRequest.getFileNames();
+			//while(iter.hasNext()) {
+			for (MultipartFile file : files) {
+				//MultipartFile file = multiRequest.getFile(iter.next());
 				if (null != file) {
 					Long size = file.getSize();
 					//文件太大不能上传

@@ -17,4 +17,18 @@ public interface IUserService {
 	 * @return
 	 */
 	List<User> getAll();
+	
+	/**
+	 * 增加
+	 * @param user
+	 */
+	void addUser(User user);
+	
+	/**
+	 * 刪除
+	 * @param id
+	 */
+	void deleteUser(int id);
+	
+	void updateUser(User user);
 }
