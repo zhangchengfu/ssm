@@ -1,5 +1,6 @@
 package com.laozhang.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class UserServiceImpl implements IUserService {
 
 	public void updateUser(User user) {
 		dao.updateByPrimaryKeySelective(user);
+	}
+
+	public List<User> getList(List<User> list) {
+		Collections.sort(list, Collections.reverseOrder());
+		return list;
 	}
 
 }

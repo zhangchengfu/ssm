@@ -30,5 +30,16 @@ public interface IUserService {
 	 */
 	void deleteUser(int id);
 	
+	/**
+	 * 更新
+	 * @param user
+	 */
 	void updateUser(User user);
+	
+	/**
+	 * 排序，倒序
+	 * @param list
+	 * @return
+	 */
+	List<User> getList(List<User> list);
 }

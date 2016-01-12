@@ -1,6 +1,6 @@
 package com.laozhang.domain;
 
-public class User {
+public class User implements Comparable<User> {
     private Integer id;
 
     private String userName;
@@ -46,4 +46,8 @@ public class User {
     public void setAge(Integer age) {
         this.age = age;
     }
+
+	public int compareTo(User o) {
+		return this.getId().compareTo(o.getId());
+	}
 }

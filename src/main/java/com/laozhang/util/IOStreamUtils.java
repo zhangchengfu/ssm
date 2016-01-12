@@ -8,8 +8,14 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
+import net.coobird.thumbnailator.util.exif.ExifUtils;
+import net.coobird.thumbnailator.util.exif.Orientation;
 
 import com.drew.imaging.jpeg.JpegMetadataReader;
 import com.drew.metadata.Directory;
@@ -126,6 +132,25 @@ public class IOStreamUtils {
                 //8旋转270
                 angle = 270;
             }
+        }
+        return angle;
+    }
+    
+    public static int getRotateAngleForPhoto2(File file) throws Exception{
+        int angle = 0;
+        ImageInputStream iis = ImageIO.createImageInputStream(file);
+        Iterator<ImageReader> iter = ImageIO.getImageReaders(iis);
+        ImageReader imagereader = iter.next();
+        Orientation orientation = ExifUtils.getExifOrientation(imagereader, 0);
+        if (null != orientation) {
+        	
+        	if (orientation == Orientation.LEFT_BOTTOM) {
+        		angle = 90;
+        	} else if (orientation == Orientation.LEFT_TOP) {
+        		angle = 270;
+        	} else if (orientation == Orientation.BOTTOM_RIGHT) {
+        		angle = 180;
+        	}
         }
         return angle;
     }

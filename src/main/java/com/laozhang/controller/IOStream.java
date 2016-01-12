@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.laozhang.domain.User;
 import com.laozhang.service.IUserService;
+import com.laozhang.util.IOStreamUtils;
 
 /**
  * 上传下载
@@ -59,7 +60,7 @@ public class IOStream {
 	 */
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
 	@ResponseBody
-	public String uploadFile(MultipartFile[] files, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public String uploadFile(MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String ret = "";
 		//创建一个通用的多部分解析器
 		CommonsMultipartResolver multiResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -70,7 +71,7 @@ public class IOStream {
 			//取得request中的所有文件名
 			//Iterator<String> iter = multiRequest.getFileNames();
 			//while(iter.hasNext()) {
-			for (MultipartFile file : files) {
+			//for (MultipartFile file : files) {
 				//MultipartFile file = multiRequest.getFile(iter.next());
 				if (null != file) {
 					Long size = file.getSize();
@@ -97,9 +98,11 @@ public class IOStream {
 					File targetFile = new File(filePath, uploadName + suffixName);
 					//上传文件
 					file.transferTo(targetFile);
+					File f = new File(filePath, "_" + uploadName + suffixName);
+					IOStreamUtils.uploadFile(targetFile, f, true);
 					ret += targetFile.getPath();
 				}
-			}
+			//}
 		}
 		return ret;
 	}
