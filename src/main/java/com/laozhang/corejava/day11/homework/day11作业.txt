@@ -1,0 +1,36 @@
+文件内容:
+
+The Associated Press won an award for its series on 
+the profiling of Muslims by the New York Police 
+Department.
+But for the first time since 1977 there was no prize 
+for fiction.The Pulitzer panel praised the Patriot-News.
+
+
+作业要求:
+
+设计一程序,提供方法如下方法:
+1.找出以上文本中所有的数字,要求是完整的数据,
+比如,上面有 1977, 这是一个数字,不是4个(1,9,7,7)
+2.打印出所有的单词,如 The,...等, 
+并统计文章中共有多少个单词.
+
+提示:
+采用 Matcher中的 find(), group(), start(), end() 方法.
+
+
+作业二:
+写一个StringUtil类(放在util包中),完成如下方法:
+//反转
+public String reverse(String src) {}
+//判断字符串是否是完整的单词
+public boolean isWord(String src) {}
+//判断是否是数字
+public boolean isDigit(String src) {}
+//判断是否是空白字符
+public boolean isBlank(String src) {}
+//返回重复的字符串
+public String repeat(String src,int count) {}
+//统计target在src中出现的次数.
+public int countMatches(String src, String target) {}
+

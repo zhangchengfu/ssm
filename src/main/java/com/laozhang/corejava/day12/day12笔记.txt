@@ -1,0 +1,210 @@
+第三部分:Java API高级应用
+
+1.集合框架
+2.泛型和枚举
+3.IO流
+4.多线程
+5.网络编程
+6.反射
+7.标注
+----------------------------------------------------
+
+Java集合框架(JCF)
+
+由SUN公司提供的一组数据操作的集合API
+
+这组API由接口和实现类,工具类所组成
+
+集合也是一种数据的容器,它是数组的一种拓展
+
+
+包:java.util
+
+JCF结构:
+Collection(I)
+	List(I)
+		ArrayList(C)
+		LinkedList(C)
+		Vector(C)
+	
+	Set(I)
+		HashSet(C)
+		SortedSet(I)
+			TreeSet(C)
+
+List特点:有序,可重复
+set特点:无序,不可重复
+SortedSet是Set的一个分支,它的特点是:有序,但是不可重复
+
+Map(I)
+	HashMap(C)
+	HashTable(C)
+	SortedMap(I)
+		TreeMap(C)
+
+Map的特点:只针对KEY值是无序的,不可重复
+SortedMap是Map的一个分支,它的特点是:针对KEY值排序,不可重复
+
+注:
+Collection中存放的值本身,而Map中是以KEY-VALUE的形式
+存放的(键-值对).
+-----------------------------------------------------
+Collection中的通用方法:
+add(Object obj)		添加对象到集合中
+remove(Object obj)	从集合中删除对象
+size()			得到集合中的元素个数
+isEmplty()		判断集合是否为空
+clear()			清空集合元素
+
+Iterator iterator()	返回集合的迭代器
+-----------------------------------------------------
+
+List(有序,可重复)
+实现类:
+1)ArrayList
+  底层是动态数组,查询效率高,因为数组可以通过下标定位,
+  但是,删除和插入的效率比较低,因为数组的增删会造成元
+  素的移动.
+
+2)LinkedList
+  底层是双向链表,它的删除和插入效率高,因为进行删除和
+  插入操作只需要关系相邻两个节点皆可,对其他节点不产生
+  影响.但是,查询效率比较低,因为要从根节点依次向下去
+  查找.
+
+3)Vector
+  与ArrayList是一样的,只是它是重量级集合框架,它其中
+  的方法都是线程同步安全的.
+
+注:由于LinkedList的特点,非常适合做堆栈或者队列这种数据
+   堆栈:先进后出
+   队列:先进先出
+
+   
+Set(无序,不可重复)
+实现类:
+1)HashSet
+  底层实现是散列表(Hash表)
+  与HashMap一样,本质上,HashSet中,组合了一个HashMap,
+  使用HashMap的KEY,而VALUE是null.
+
+  HashSet是如何实现元素无序和不可重复的?
+  答:当你把一个对象添加到HashSet容器中时,首先,系统
+     会调用这个对象的hashCode()方法,得到一个散列码,
+     然后,根据这个散列码来决定把此元素放到哪里去.
+
+     当第二个元素加入的时候,如果散列码与之前的元素
+     一样,它存放的位置被占用了,此时,还不能判断这两个
+     对象是同一个对象,那就会调用这个对象的equals()
+     方法,如果equals()方法返回true,表示该对象已近
+     存在了,就不再添加.
+
+
+2)SortedSet接口
+  特点:排序,不可重复
+  实现类:TreeSet
+  底层采用二叉树算法来实现
+
+  要实现排序,必须依赖于排序接口
+  JCF提供了两种方式:
+  方式一:java.lang.Comparable接口
+  方法:
+  public int compareTo(Object o)
+  //比较当前对象和传入的对象
+
+  方式二:java.util.Comparator接口
+  方法:
+  public int compare(Object o1,Object o2)
+  //比较两个传入的对象
+
+  TreeSet的原理:
+  1)如果不是Comparator作为参数构造的话,则此类
+    将利用Comparable接口来实现排序和不重复.
+
+    会要求你添加到TreeSet中的元素必须实现Comparable接口,
+    从第二个元素开始,就会回调添加元素的compareTo()方法.
+    以之前加入的元素作为参数,来决定大小.
+
+  2)如果是以Comparator作为参数构造的话,则会利用
+    Comparator来实现排序和不重复
+
+    此时,就不再需要元素实现Comparable接口,而是通过
+    Comparator比较器来比较
+    从第二个元素开始,就会回调Comparator中的compare()方法,
+    传入两个对象,从而决定大小.
+--------------------------------------------------------
+
+Map特性:
+Map采用的是键-值对的形式来存放数据的集合
+
+常用方法:
+put(Object key,Object value)	把key/value加入到map中
+get(Object key)			根据key来得到value值
+containKey(Object key)		判断当前map中是否含有指定Key值
+containValue(Object value)	判断当前map中是否含有指定value值
+
+//迭代方法(把Map转换成Set,再迭代)
+public Set keySet()
+//把Map中的key拿出来放入到Set中,并且返回
+
+public Collection values()
+//把Map中的全部value值拿出来,放入到Collection中,并且返回
+
+public Set<Map.entry> entrySet()
+//把Map中的key和value封装成一个Map.entry对象,放入
+  Set中,并且返回
+
+
+实现类:
+1)HashMap
+  特点:无序,不可重复(针对KEY值不可重复)
+
+  构造方法:
+  public HashMap()//构造一个空的HashMap对象
+  public HashMap(Map map)//根据另一个Map的内容来构建新Map
+
+  HashMap的底层也是散列表,但是它只针对Key的对象采用
+  散列算法,从而决定元素存放的位置以及是否重复
+
+  所以,针对HashMap来说,key相同,则代表对象是重复的,
+  因此,我们只要保证key值不等即可.
+
+  一般而言,我们直接采用String类型或者包装类型做为
+  Map的key,而自定义类型做为Map的value
+
+
+2)TreeMap与TreeSet的关系
+  TreeSet中组合了一个TreeMap,使用它的key来存放值,
+  而value全部使用一个对象(Object)来填充.
+----------------------------------------------------
+
+List集合的排序
+
+工具类:java.util.Collections
+
+本类中提供了JCF中常见的操作,都是静态方法.
+
+Collections中的常用方法:
+public static void sort(List list)	//排序
+public static void sort(List list,Comparator c)
+public static void shuffle(List list)	//随机打乱		
+public static void fill(List list,Object obj)//填充
+public static void reverse(List list)	//翻转集合元素
+
+对象做比较使用的接口:
+1.java.lang.Comparable,可比较的接口
+  直接调用Collections.sort(List list)方法,要求加入
+  此List集合中的元素实现Comparable接口,并且重写
+  compareTo(Object o)方法.
+
+2.java.util.Comparator,比较器接口
+  直接调用Collections.sort(List list,Comparator c).
+  重写compare(Object o1,Object o2)方法.
+----------------------------------------------------
+Collection和Collections的区别:
+
+Collection是一个接口,有List和Set两个子接口,分别有各自
+的实现,它是集合中的一个顶级接口.
+
+Collections是集合操作的工具类,提供操作集合数据的各种
+方法,如打乱,排序,填充等等.

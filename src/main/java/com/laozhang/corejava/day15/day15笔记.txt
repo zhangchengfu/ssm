@@ -1,0 +1,292 @@
+字符流
+
+桥接器  InputStreamReader
+此流是一个过滤流,提供把字节流转换成字符流的功能
+
+构造方法:
+public InputStreamReader(InputStream in)
+public InputStreamReader(InputStream in,String charset)
+
+
+基本概念
+编码(Encoding):把字符转换成字节的过程
+解码(Decoding):把字节转换成字符的过程
+
+编码和解码都依赖于字符集:
+
+常用字符集:
+GBK,gb2312
+UTF-8
+ASCII码
+Big5	繁体中文
+ISO-8859-1
+...
+
+如:桥接器把标输入设备(键盘)转换成字符输入流
+
+标准输入流	
+System.in	InputStream
+
+标准输出流
+System.out	PrintStream extends OutputStream
+
+
+所以:
+BufferedReader br = new BufferedReader(
+		new InputStreamReader(System.in));
+//这样,我们从键盘获取整行信息
+String line = br.readLine();//阻塞方法
+
+---------------------------------------------------
+
+随机访问存取流:RandomAccessFile
+
+这个流既支持读,写操作,并且可以操作基本类型,更重要的
+是它可以任意定位到指定文件的指定位置进行读,写操作.
+
+构造方法:
+public RandomAccessFile(String filename,String mode)
+public RandomAccessFile(File file,String mode)
+
+注:
+mode有:
+r	只读
+rw	读写
+
+重要方法:
+public void seek(long pointer)//定位到当前文件的指定位置处
+public long getFilePointer()//获取当前文件的偏移量
+public String readLine()
+public int read()
+...
+-----------------------------------------------------------
+
+Java多线程与线程并发处理
+
+基本概念
+进程(process):正在运行的程序,如JVM进程,QQ进程
+
+线程(thread):运行在进程内部,共享进程空间,并且自己
+             拥有独立执行机制的资源
+
+注:一个进程可以创建多个线程,JAVA程序支持多线程并发
+
+---------------------------------------------------
+
+API
+在Java中,要开发多线程的程序,有两种方法:
+1.写一个类继承java.lang.Thread类,并且重写run()方法
+  如:
+  public class FirstThread extens Thread{
+	...
+	public void run(){
+		//线程执行代码...
+	}
+  }
+  //创建线程
+  Thread t1 = new FirstThread();
+  //启动线程
+  t1.start();//千万不能调用run()方法
+
+
+2.写一个类实现java.lang.Runnable接口,并且重写run()方法
+  如:
+  public class FirstThread implements Runnable{
+	...
+	public void run(){
+		//线程执行代码...
+	}
+  }
+  //创建线程
+  Runnable r = new FirstThread();
+  Thread t2 = new Thread(r);
+  //启动线程
+  t2.start();
+---------------------------------------------------
+
+多线程并发访问控制:
+当多个线程操作同一个资源对象的时候,会造成多线程并发
+
+如果这些操作是修改操作的话,如不加控制,就会造成数据
+不一致的情况产生,这种应用场景下是不被允许的,所以,我们
+要做多线程并发访问控制.
+
+Java多线程中提供了"锁"机制来控制并发访问
+
+互斥锁(lock)是一种同步资源,它是对象所有用的,但是,
+只有当做线程同步时,这个锁才会出现.
+
+如何来加锁呢?
+使用关键字:synchronized
+
+有两种方式:
+1.内同步
+  就是指直接在方法的修饰符上加入synchronized关键字
+  如:
+  //这个相当于使用当前对象作为临界资源对象
+  public synchronized void run(){
+	//线程代码
+	method_a();
+  }
+  public synchronized void method_a(){}
+
+
+2.外同步
+  就是指在方法体中使用synchronized来同步局部代码块
+  这样做的好处:
+  a)可以指定临界资源
+  b)可以大大缩小同步代码的范围
+  c)可以申请多个临界资源对象的"锁"
+
+  如:
+  public void run(){
+	//线程代码
+	...
+	synchronized(临界资源1){
+		//同步代码块
+	}
+	synchronized(临界资源2){
+		//同步代码块
+	}
+	...
+  }
+  
+注:加入synchronized修饰的方法都是同步方法,它是多线程
+   并发安全的.但是效率降低,只能串行执行.
+
+ArrayList和Vector
+StringBuilder和StringBuffer
+HashMap和HashTable
+以上几个类,前者都是线程非安全的,后者都是线程安全的.
+-----------------------------------------------------
+
+JVM一旦启动,就会自动创建两条线程:
+1)main主线程,负责调用程序的main方法的.
+2)gc后台守护线程,也就是垃圾回收器
+
+注:
+JVM进程要等到所有的非守护线程全部结束后,才会结束进程.
+一旦线程启动,JVM/CUP就会调用这些线程,它们会在CPU的调
+度下各自独立完成自己的业务,直到程序停止.
+
+-----------------------------------------------------
+
+操作线程的常用方法:
+1.线程优先级
+  API中提供三个常量
+  MIN_PRIORITY		最小优先级
+  MAX_PRIORITY		最大优先级
+  NORM_PRIORITY		普通优先级
+
+在线程启动前,要设置线程优先级才会有效:
+setPriority(以上三个常量)
+
+
+2.启动线程
+  start()	以线程的方式来执行run()方法
+  
+3.中断线程
+  interrupt()
+
+4."合并"线程--等待线程运行结束
+  join()
+
+5.暂停方法
+  yield()	本线程立即停止运行,回到可运行状态
+
+6.sleep()
+  阻塞方法,线程睡眠
+---------------------------------------------------
+
+线程的状态:
+1.初始态(Beginning)
+  Thread t = new Thread();
+
+2.可运行状态(就绪态,Runnable)
+  t.start();
+
+3.运行态(Running)
+  正在运行的线程
+
+4.阻塞态(Blocking)
+  处于运行态的线程如果遇到如下情况,则会进入阻塞态
+  a)等待用户输入
+  b)调用其他线程的join(),如:t2.join();
+  c)sleep();
+
+  相对应,如果遇到以下情况,则线程会进入可运行状态
+  a)用户输入完毕
+  b)t2线程运行结束,或者被其他运行的线程中断
+  c)sleep的时间到了或者被其他运行的线程所中断
+
+5.终止态(Terminate)
+表示线程运行结束
+
+6.锁池
+  是一种特殊的阻塞态
+  当线程要去执行同步代码时,JVM会检测这个线程是否
+  含有临界资源(锁标记),如果有,则此线程会进入同步
+  代码执行,否则,会把此线程打入到"临界资源"对象的
+  锁池.
+
+7.等待队列
+  是一种特殊的阻塞态
+  处于此状态下的线程,JVM是不会主动去调用,必须要由
+  其他线程通过notifyAll()方法唤醒,使得线程从等待
+  队列状态到锁池状态中.
+---------------------------------------------------
+
+多线程之间的通信(Communication for thread)
+
+条件:
+a)要有同步(要有临界资源)
+b)利用wait(),notify(),notifyAll()方法来通信
+
+线程通信方法:
+wait()方法
+如果线程调用临界资源的wait方法,则表示此线程会释放
+临界资源对象的锁,自己进入此临界资源的等待队列状态.
+
+notify()和notifyAll()方法的唯一不同的是:
+此方法只是随机唤醒一个线程,而notifyAll()方法是唤醒
+所有的线程.
+
+notifyAll()方法
+通知所有此临界资源的等待队列中的线程到锁池中去.
+
+注:
+在编写多线程通信时,在wait之前,一定要先notifyAll()
+
+
+线程通信作用经典案例:
+生产者-消费者问题
+---------------------------------------------------
+
+死锁(Death Lock)
+就是指多个线程之间互相拿着对方已近拥有的锁标记
+
+如:
+public void run(){
+	...
+	synchronized(lockA){
+		...
+	}
+	synchronized(lockB){
+		...
+	}
+}
+
+另外一条线程:
+public void run(){
+	synchronized(lockB){
+		...
+	}
+	synchronized(lockA){
+		...
+	}
+}
+
+注:要尽量避免产生死锁
+   a)尽量不要交差申请锁标记
+   b)wait和notifyAll要成对出现,
+     并且要注意wait方法的时机

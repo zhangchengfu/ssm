@@ -1,0 +1,305 @@
+多态
+
+编译时类型
+可以认为是声明对象时候的类型,在编译时有效
+
+运行时类型
+是指对象本身的类型,也就是new运算符后面的类型
+
+
+多态的理解
+1.对象的编译时类型决定了此对象可以访问哪些成员
+2.对象的运行时类型决定了此对象真正的行为
+
+
+多态的应用
+1.对象的编译时类型尽可能写父类
+2.方法的参数也尽可能写父类
+3.方法的返回类型也尽可能写父类
+
+一句话:一切面向父类去编程
+
+
+如:设计一个方法,可以输出任意形状的面积
+public void printArea(Circle c){
+	System.out.println(c.area());
+}
+public void printArea(Square s){
+	System.out.println(s.area());
+}
+把以上两个方法实现了方法的重载,但是由于Circle和Square都
+继承于Shape,所以根据多态,只需要设计一个方法来完成此业务
+
+public void printArea(Shape s){
+	System.out.println(s.area());
+}
+这个方法既可以接收Circle为参数,又可以接收Square为参数...
+
+--------------------------------------------------------
+设计一个方法,可以根据指定的参数来决定创建哪个实例?
+
+public Circle newInstance1(){}
+public Rect newInstance2(){}
+
+转换成:
+
+public Shape newInstance(int type){
+	if(type == 1){
+		return new Circle();
+	}else if(type == 2){
+		return new Rect();
+	}else{
+		System.out.println("参数不合法!");
+		return null;
+	}
+}
+以上就是一个简单工厂(Simple Factory)设计模式
+它的作用:通过统一的方法来创建某个类的具体实例
+
+如:
+java.util.Calendar类就是采用简单工厂模式设计的
+它里面的getInstance()方法
+对于调用者来说,可以通过此方法来获取这个类的实例
+调用者:
+Calendar cal = Calendar.getInstance();
+或者
+Calendar cal = new GregorianCalendar();
+
+------------------------------------------------------
+面向对象初级特性:封装,继承,多态
+面向对象高级特性:静态,抽象,接口
+------------------------------------------------------
+
+静态
+
+关键字:static,它是一种修饰符
+
+可以用来修饰:
+1.属性
+  表示这个属性是静态的,也叫做类变量,它是所有对象所共
+  享的,是类所拥有的.
+  
+  语法:
+  private static int i;//静态属性
+
+静态属性的初始化时机:
+是在类加载的时候,就会给静态属性分配空间并且赋值
+普通属性在创建对象之后.
+
+静态属性的应用:
+例:写一个员工类(Employee),属性如下:
+id	员工编号(10000开始,并且依次递增)
+name	姓名
+salary	薪资
+
+见代码Employee
+
+
+2.方法
+  表示该方法是静态方法
+  特点:
+  a.在静态方法中,不能直接访问非静态的成员,可以访问静态
+    属性.
+  b.静态方法可以直接通过类名.方法名调用,无需创建对象.
+  c.构造方法可以直接调用静态成员
+  d.非静态方法可以访问静态属性
+
+静态方法的应用:
+一般用在工具类中
+自定义的工具类:DateUtil,InputDataUtil
+API内置工具类:java.lang.Math
+	      java.util.Arrays
+
+提问:
+a.为什么静态方法不能直接调用非静态成员?
+答:因为静态方法出现的时候,对象还没有,而所有非静态
+   成员都是对象所持有的,对象都不存在,自然访问不到.
+
+b.如何在静态方法中调用非静态成员?
+答:通过创建对象来调用
+
+c.为什么main方法是静态的?
+答:因为main方法是程序的入口,此方法由JVM来调用,对象
+   还不存在,所以一定是static的.
+
+
+3.代码块
+普通代码块(一般不写)
+语法:
+{
+	//代码;
+}
+
+静态代码块
+static{
+	//代码;
+}
+
+静态代码块的特点:
+a.在类加载的时候执行
+b.只会被执行一次
+
+根据静态代码块的特点,它比较适合做费事费力的工作,
+比如:加载本地大型资源文件,创建数据库连接池...
+
+4.静态导入
+
+5.内部类(Inner Class)(内部类再说)
+---------------------------------------------------
+类加载进JVM后的活动过程
+1.JVM加载执行的类
+2.给静态域分配空间
+3.初始化静态域
+4.调用静态代码块
+5.如果创建对象,则:
+  5-1 分配非静态成员空间
+  5-2 初始化非静态成员
+  5-3 调用普通代码块(如果有的话)
+  5-4 调用构造方法
+---------------------------------------------------
+
+static关键字的应用:单例设计模式(Singleton Pattern)
+
+定义:在指定系统中,某一个类的实例永远只有一个
+
+问题域:
+如何在某个应用系统中,使得某个类的实例具有唯一性
+
+解决方法:
+a.构造方法必须私有化
+b.提供本身的唯一实例作为这个类的属性
+c.提供一个公开的方法来返回唯一的实例
+
+如:
+class Singleton{
+	private static Singelton instance = new Singleton();
+
+	//如何保证构造方法不被外界调用(私有化它)
+	private Singleton(){
+
+	}
+	
+	//既然外界不能直接通过构造方法来创建对象,那么
+	//在这个类中,就应该提供对外公开的方法来返回
+	//本身的类型
+	public static singleton getInstace(){
+		return instance;
+	}
+}
+//得到singleton对象
+Singleton s1 = new Singleton();//error
+改成:
+Singleton s1 = Single.getInstance();
+---------------------------------------------------
+
+final关键字
+可以修饰:
+1.局部变量
+  表示这个局部变量是一个常量
+  如:
+  final int ROWS = 10;
+
+2.属性
+  表示这个属性是常量属性
+  private final int ROW_EACH_PAGE = 10;
+
+  在java.util.Calendar类中定义了大量的常量属性,都是
+  如:DAY_OF_MONTH
+     DAY_OF_WEEK
+     ...
+
+常量的作用:
+比字面量携带更多的信息
+
+比如:DAY_OF_MOTH这个常量的值是5
+
+来获取年月日,第二种方式可读性更高,更有意义
+Date d = cal.get(5);
+Date d = cal.get(DAY_OF_MONTH);
+
+
+自定义常量:
+//产生形状的工厂类
+public class ShapeFactory{
+	//自定义常量
+	public static final int CIRCLE = 1;
+	public static final int RECT = 2;
+	public static final int SQUARE = 3;
+
+	//设计一个方法来产生具体形状的实例
+	public static Shape getInstance(int type){
+		if(type == 1){
+			return new Circle();
+		}else if(type == 2){
+			return new Rect();
+		}else if(type == 3){
+			return new SQUARE();
+		}else{
+			System.out.println("参数不合法!");
+			return null;
+		}
+	}
+}
+
+3.方法
+  表示这个方法不可被重写覆盖
+
+4.类
+  表示这个类不能被继承
+----------------------------------------------------
+
+Java中字符串的处理
+java.lang.String
+java.lang.StringBuilder
+java.lang.StringBuffer
+以上三个类都是final的
+
+8种基本类型的包装类(java.lang.*)都是final
+byte -> Byte
+short -> Short
+int -> Integer
+long -> Long
+float -> Float
+double -> Double
+char -> Character
+boolean -> Boolean
+
+1.字符串类(java.lang.String)不光final的,它还是
+  不可变的(immutable)
+
+如:
+String str = "Hello";
+str = str + ",World!";//会产生临时对象
+
+由于字符串的特殊性,JVM对字符串进行了特殊处理,
+提供了一种"串池",来重用字符串对象.
+
+//会声明(普通堆)空间来存放
+String s1 = new String("JACK");
+
+//申请串池来存放
+String s1 = "JACK";
+
+这两种创建字符串的方式的区别:
+a.采用申请堆空间的方式,每new一次,就会立刻建立对象
+b.采用"串池"方式,用这种方式可以提高便捷度,而且效率
+  很高,因为这种创建方式,会首先去"串池"中寻找是否已近
+  存在该字符串,如果存在,直接返回此字符串的地址给引用.
+
+字符串的本质是:字符数组
+方法:
+char[] toCharArray();
+
+
+如何优化字符串拼接?
+java.lang.StringBuilder	轻量级	线程非安全
+java.lang.StringBuffer	重量级	线程安全
+此两个类功能完全一样
+使用较多的是StringBuilder
+
+方法:
+append()
+
+结论:
+字符串做拼接,效率极低,请尽量使用StringBuilder/StringBuffer
+中的append()方法来拼接.

@@ -1,0 +1,31 @@
+作业一:
+1.定义图书操作业务接口 IBookBiz
+有如下方法:
+//添加图书
+ void add(Book b);
+//根据图书name 来删除指定图书
+ void deleteByName(String name);
+//打印出所有的图书信息
+ void outputAllBooks();
+
+2. 定义 数组图书管理业务实现类(ArrayBookBiz) 
+实现 IBookBiz接口，
+实现所有方法,
+提示，给出如下属性
+属性:
+private static final int CAPACITY = 5;
+private int count; //代表有效图书数量
+private Book[] books = new Book[CAPACITY];
+方法：
+  就是实现接口中的所有方法
+
+最后，写测试类，测试这三个方法.
+
+
+
+
+
+
+
+
+

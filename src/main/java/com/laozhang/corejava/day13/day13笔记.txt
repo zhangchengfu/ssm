@@ -1,0 +1,225 @@
+集合的细节操作
+
+考虑到如下情况:
+List list1 = new ArrayList();
+Book b1 = new Book();
+Book b2 = new Book();
+Book b3 = new Book();
+list1.add(b1);
+list1.add(b2);
+list1.add(b3);
+
+List list2 = new ArrayList(list1);
+//此时,list1和list2是两个完全不同的集合,但是,它们中
+的元素是完全一样的.
+
+所以,对集合操作产生如下两种情况:
+1)结构性修改
+  也就是针对本身进行操作,如add,remove等操作,
+  这种修改不会相互影响.
+
+如:
+list2.remove(b1);//不会影响list1
+Collections.sort(list2);//不会影响list1
+
+2)非结构性修改
+  也就是操作集合元素本身
+ 
+如:list1.get(1).setAuthor("newAuthor");
+   list list3 = list1;
+----------------------------------------------------
+
+属性类:
+java.util.Properties类
+
+此类也是Map的实现类,它继承与HashTable
+
+但是它和Map有所不同,Properties中的KEY和VALUE只能是
+String类型.
+
+在Java中,有一个类的文件称之为属性文件,它的格式如下:
+#注释
+key1=value1
+key2=value2
+...
+
+常用方法:
+public Properties()
+String getProperty(String key)//通过key值来获取value
+void load(InputStream in)//把属性文件加载进Properties中
+
+注:
+我们可以通过System.getProperties()获取系统的信息
+这些信息都是以key-value的形式存放的.
+---------------------------------------------------
+
+泛型(Generic)
+
+是JDK5.0之后开始推出的一项新特型,它的作用是保证
+集合元素的类型安全.
+
+泛型的本质:类型的参数化
+
+在JDK5.0中,整个JCF都被重写,加上了泛型,集合就变成
+类型安全的容器.
+
+如:
+JDK5.0之前,集合可以存放任意类型的元素
+List list = new ArrayList();
+list.add(1);
+list.add("LiLei");
+
+JDK5.0之后
+List<String> list = new ArrayList<String>();
+list.add("LiLei");//true
+list.add(1);//error
+
+注:
+泛型只是JDK的编译器来做类型检测,在运行时没有泛型
+概念,也就是说泛型是编译时的概念,它不存在多态.
+
+如:
+Number n = new Integer(100);//ok
+List list = new ArrayList();//ok
+List<Number> list = new ArrayList<Integer>();//编译错误
+
+
+在运行时,泛型会被擦除
+如:
+List<String> strList = new ArrayList<String>();
+List<Long> longList = new ArrayList<Long>();
+在编译期间,
+strList的编译时类型:List<String>
+longList的编译时类型:List<Long>
+所以,它们不一样,但是运行时,泛型会被擦除
+它们的运行时类型都是ArrayList.
+
+即:strList.getClass() == longList.getClass();//true
+
+
+泛型的通配符 ?
+如:
+List<?> list = new ArrayList<String>();//ok
+//此时,由于list的泛型还没有确定,所以list中只能加入
+null值.
+list.add("Jack");//error
+list.add(null);//ok
+
+所以,一般这种写法只用在方法的参数中
+
+泛型通配符的限制
+a.指定上限	<? extends 类型>
+b.指定下限	<? super 类型>
+c.使用&来指定多个限制
+
+
+自定义泛型:
+1.自定义泛型类
+如:
+public class Entry{
+	//属性
+	private Object key;
+	private object value;
+
+	//构造方法
+	public Entry(){}
+
+	public Entry(Object key,Object value){
+		this.key = key;
+		this.value = value;
+	}
+
+	//getter/setter
+}
+
+使用:
+Entry e1 = new Entry("Jack","13");
+
+改成自定义泛型类:见第13天Entry
+
+
+2.自定义泛型方法
+是指给方法加上泛型,而类不是泛型类
+
+语法:
+修饰符<泛型定义> 返回类型 方法名([参数列表])[可抛出的异常]{
+	//方法体
+}
+
+------------------------------------------------------------
+
+枚举(Enum)
+
+定义:是一种类型安全的常量类,所以,也是一种数据类型
+在JVM规范中,所有的枚举都自动继承于java.lang.Enum类
+
+要定义一个枚举类的关键字:enum
+
+语法:
+public enum 枚举名{
+	//枚举常量
+
+	//方法[可选]
+}
+
+如:
+public enum Gender{
+	FMALE,
+	MALE;
+}
+
+//使用者
+public class Student{
+	private String stuNo;
+	private Gender gender;//性别
+	...
+	public void setGender(Gender g){
+		this.gender = g;
+	}
+}	
+
+//创建学员
+Student s = new Student("1000",Gender.MALE);
+
+
+枚举的原理:
+在JDK5.0之前,要定义一个类型安全的常量
+public class Season{
+	public static final Season SPRING = new Season();
+	public static final Season SUMMER = new Season();
+	public static final Season AUTUMN = new Season();
+	public static final Season WINTER = new Season();
+
+	public Season(){}
+}
+
+//使用者:
+public class Test{
+	public static void test(Season season){
+		...
+	}
+}
+
+//调用者:
+Test.test(Season.SPRING);
+
+
+JDK5.0之后:
+public enum Season{
+	SPRING,SUMMER,AUTUMN,WINTER;
+}
+
+
+java.lang.Enum类
+常用方法:
+public String name()	//获取枚举常量的名称
+
+通过调用values()方法可以得到所有枚举常量的数组
+
+
+枚举的特点:
+1.每个枚举常量都是枚举的一个实例
+2.枚举的构造方法一定是私有化的
+3.枚举可以有属性,方法,构造方法
+4.枚举也可以有抽象方法,如果有抽象方法,则每个枚举
+  常量都必须实现这个抽象方法.

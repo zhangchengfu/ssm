@@ -1,0 +1,245 @@
+抽象类和接口
+
+学习目标:
+1.掌握抽象类的定义
+2.掌握抽象类的使用
+3.理解模板设计模式
+4.掌握接口的定义
+5.掌握接口的使用
+6.抽象类和接口的异同
+7.软件设计的原则
+
+
+Java中有两种抽象数据类型,
+分别是抽象类(abstract class)和接口(interface)
+-----------------------------------------------------
+
+抽象类(abstract class)
+
+关键字:abstract,也是一种修饰符
+
+如何定义一个抽象类呢?
+语法:
+public abstract class Shape{
+	//属性
+	private String type;
+
+	//业务方法
+	//抽象方法
+	public abstract double area();
+}
+
+抽象方法:
+在普通方法修饰符上加上abstract关键字,就变抽象方法
+抽象方法没有实现,直接用;结束,没有大括号.
+
+它的目的天生就是让子类来重写的,因为父类没有办法去
+实现.
+
+抽象类的特点:
+a.抽象类不能被实例化
+b.抽象类可以没有抽象方法,但是如果有抽象方法,那么它
+  一定是抽象类
+c.如果子类继承了抽象父类,那么要实现父类中所有的抽象
+  方法,除非这个子类也是抽象类
+d.抽象方法可以有构造方法
+
+注:final和abstract不能同时修饰一个类
+----------------------------------------------------
+
+抽象类的应用之模板设计模式(Template Pattern)
+
+问题域:
+如何在应用系统中使用一个相对固定的业务流程,具体的
+实现由子类去实现
+
+应用的场景:
+比较适合制定"顶级业务流程",只关心固定流程,不关心
+具体实现
+
+解决方案:
+1.定义一个抽象父类,在这个父类中设计好抽象方法,这些
+  方法由子类去实现
+2.在这个抽象父类中,还要定义一个具体的"执行业务的流程"
+  的模板的方法,由这个方法去调用其他的抽象方法
+
+如:
+晚会的小品演出(报幕,叙事,煽情,结束)
+具体的实现延迟到子类中.
+
+代码:
+public abstract class 小品 {
+	//定义抽象方法
+	public abstract void 报幕();
+	public abstract void 叙事();
+	public abstract void 煽情();
+	public abstract void 结束();
+
+	//定义一个具体执行业务流程的模板方法
+	public final void topMethod(){
+		报幕();
+		叙事();
+		煽情();
+		结束();
+	}
+}
+//具体实现者
+public class 赵本山 extends 小品{
+	//重写所有抽象方法
+	public void 报幕(){...}
+	public void 叙事(){...}
+	public void 煽情(){...}
+	public void 结束(){...}
+}
+----------------------------------------------------
+修饰符
+public,protected,[],private
+static,final,abstract
+
+注:
+一.修饰符之间没有先后顺序
+二.修饰符混用禁忌
+   1.abstract和final不能一起使用
+   2.static和abstract不能一起使用
+     前者是没有多态的,后者为了就是多态
+   3.private和[]不能与abstract同时使用
+     此两个修饰符子类不能访问,所以子类无法重写,
+     就与abstract原则相违背了.
+---------------------------------------------------
+接口(Interface)
+
+关键字:interface
+
+如何定义一个接口:
+
+public interface 接口名 {
+	//属性,都是公开静态属性
+	//方法,都是公开的抽象方法
+}
+
+注:
+接口也是一个类,它编译完成后,也会产生字节码文件
+所以,它属于一种特殊的类.
+
+接口的特点:
+1.支持多重继承,也就说,一个接口可以继承多个接口,
+  多个接口之间用,隔开
+
+2.接口中没有构造方法
+
+3.接口中所有的属性都是公开,静态常量(public static final)
+
+4.接口中的所有方法也都是公开,抽象的方法(public abstract)
+
+5.与抽象类一样,接口也不能被实例化
+
+6.一个类可以实现多个接口,多个接口之间用,隔开
+  如果一个类实现了一个接口,则必须实现接口中所有的方法
+  除非这个类是抽象类.
+
+
+接口的命名规范:
+1)以I开头,IHello,ICar...
+2)以able结尾,Runnable,Movable...
+注:以上两种命名方式仅作推荐,只要是合法的标示符,都可以
+   作为接口名.
+
+如:
+public interface Movable{
+	//属性
+	int NORTH = 1;
+	//相当于public static final int NORTH = 1;
+
+	//方法	
+	void run();
+	//相当于public abstract void run();
+}
+
+实现接口
+关键字:implements
+
+语法:
+public class 类名 implements 接口列表{}
+
+
+对于接口而言,一个接口可以继承多个接口(多重继承),
+它就拥有了父接口中所有的属性和方法
+
+如:
+public interface IA{
+	void method_a();
+}
+
+public interface IB{
+	void method_b();
+}
+
+public interface IC extends IA,IB{
+	void method_c();
+}
+
+//写一个类实现IC
+public class Cimpl implements IC {
+	//要实现IC自己的方法,包含从父接口中继承过来的
+	public void method_a(){}
+	public void method_b(){}
+	public void method_c(){}
+}
+
+public class ABimpl implements IA,IB {
+	public void method_a(){}
+	public void method_b(){}
+}
+
+IA ia = new Cimpl();//OK
+IB ib = ia;
+IC ic = ia;
+IC ic2 = new ABimpl();//error
+---------------------------------------------------
+
+接口的分类:
+1.常量接口
+  特点:只有属性,没有方法
+
+  如:
+  public interface IContants{
+	int ROWS = 20;
+	int COLS = 10;
+
+	String msg = "Hello,World";
+  }
+  实现者:
+  public class Test implements IContants{
+	//由于被实现的接口没有方法,所以无需实现任
+	//何方法,直接会从常量接口中获得常量
+  }
+
+  注:从JDK 1.5之后,都是用枚举来代替常量接口.
+
+
+2.标记接口
+  特点:既没有属性,也没有方法的接口
+
+  作用:在系统中,可以用instanceof运算符来判断某个实例
+       是否实现了某个标记接口,从而采用不同的策略处理.
+
+如:
+//标记接口
+public interface Flyable{}
+
+//实现类
+public class Bird extends Animals implements Flyable{}
+
+public class Eagle extends Animals implements Flyable{}
+
+public class Cat extends Animals{}
+
+//使用者:
+如果在程序中要区别以上3种动物,就可以使用标记接口
+
+
+实际上,标记接口很重要
+java.io.Serializable接口
+
+此标记接口用来做对象的持久化,JVM针对这个接口进行
+判断,来决定此对象是否符合持久化的要求.

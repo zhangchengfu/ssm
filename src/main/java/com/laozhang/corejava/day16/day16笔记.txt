@@ -1,0 +1,126 @@
+网络编程
+
+基本概念:
+
+计算机端口:
+是指计算机通信时所需要的通道,每个计算机都有65536个
+端口.一般而言,1024以下的端口都是预留给操作系统使用的.
+
+如:
+FTP服务默认端口:21
+Telnet服务默认端口:23
+
+注:只要涉及到网络通信的服务和程序,一定会占用端口.
+   所谓的计算机之间的通信,就是指端口之间的通信.
+
+协议,如TCP/IP,四层网络协议;OSI,七层网络协议
+
+哪七层?
+物理层
+链路层
+网络层
+传输层
+会话层
+表示层
+应用层
+
+Java的网络编程只是针对传输层的编程,无需考虑底层协议,
+也不需要关系IP的传递.
+
+
+TCP:传输控制协议
+    TCP是面向连接的,安全的传输协议
+    TCP可以保证传输的数据不会丢包
+
+UDP:用户数据报协议
+    UDP不是面向连接,非安全的传输协议
+    不能保证不丢包
+
+IP:主机的地址
+一个IP地址在互联网上就代表一台主机
+---------------------------------------------------
+
+Java网络编程的API
+
+java.net包
+
+类:
+1.ServerSocket	网络服务套接字类
+  
+  构造方法:
+  public ServerSocket(){}
+  //随机选用一个空闲的端口来创建网络服务套接字
+
+  public ServerSocket(int port){}
+  //指定一个端口来创建网络服务套接字
+
+  
+  方法:
+  public Socket accept()
+  //等待用户的连接,是一个阻塞方法,当有用户连接时,
+  打破阻塞,创建Socket对象
+
+
+2.Socket	客户端套接字类
+  
+  构造方法:
+  public Socket(String host,int port)
+  //根据主机地址和端口号去连接服务器,如果连接成功,
+    则返回Socket.
+
+  方法:
+  public InputStream getInputStream()//输入流
+  public OutputSream getOutputStream()//输出流
+  public InetAddress getInetAddress()//获取客户端的主机信息
+
+
+3.InetAddress
+  方法:
+  public String getHostAddress()//得到IP地址格式的字符串
+  public String getHostName()//得到IP地址的主机字符串
+-----------------------------------------------------------
+
+编写网络程序的步骤:
+1.开发服务端
+  a.创建一个ServerSocket
+    ServerSocket ss = new ServerSocket(18888);
+
+  b.调用accept()方法来监听客户端的连接
+    Socket s = ss.accept();
+
+  c.开始与客户端进行通信
+    s.getInputStream();
+    s.getOutputStream();
+    ...
+
+2.开发客户端
+  a.创建Socket对象
+    Socket s = new Socket("服务器的IP地址",18888);
+
+  b.开始与服务器通信
+    s.getInputStream();
+    s.getOutputStream();
+    ...
+----------------------------------------------------
+
+C/S架构程序,是指Client(客户端)和Server(服务端)
+的架构模式
+如:QQ
+
+缺点:
+如果有版本更新,要求所有的用户都去更新,费时费力
+
+优点:
+可以有特有的通信通道,效率高,安全
+
+
+B/S架构程序,是指Browser(浏览器)和Server(服务端)
+的架构模式
+
+缺点:
+对服务器要求很高,一旦服务器崩溃,可能丢失所有信息,
+服务端信息安全性问题.
+
+优点:
+不需要去开发客户端,如果有更新,不需要通信客户端,
+所有的数据都存放在服务端,在服务器端进行运算.

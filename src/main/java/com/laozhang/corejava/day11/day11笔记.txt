@@ -1,0 +1,243 @@
+正则表达式(Regular Expression)
+
+www.ostools.net
+
+JDK1.4过后,引入对正则表达式的完全支持
+
+API:java.util.regex包
+
+类
+Pattern
+常用方法:
+public static Pattern compile(String regex)
+//将给定的正则表达式编译到模板中
+
+publi static boolean matches(String regex,String source)
+//把正则表达式与资源进行匹配,成功返回true,反之为false
+
+public Matcher matcher(String source)
+//得到Matcher匹配器
+
+
+Matcher
+常用方法:
+public boolean matches()
+//做一次精确匹配,成功返回true,反之为false
+
+public boolean find()
+//尝试全部去匹配模板模式(正则)
+
+public int start()
+//返回成功匹配的字符在整个序列中的起始位置
+
+public int end()
+//返回成功匹配的字符在整个序列中的结束位置
+
+public String group()
+//得到匹配成功的字符序列
+
+
+正则表达式例子:
+匹配QQ号码
+[1-9][0-9]{4,}
+
+匹配邮编
+\d{6}
+
+匹配IP地址
+\d+\.\d+\.\d+\.\d+
+
+----------------------------------------------------
+
+Java异常处理机制
+
+异常的定义:
+异常是一种对象,是一种对象的数据类型,异常的顶级父类:
+java.lang.Throwable
+
+
+异常的分类:
+在JVM中按照异常的严重程度,把异常分为两大类:
+一.错误(Error)
+   是比较严重的,一般不建议处理
+
+二.异常(Exception)
+   是指程序在运行过程中遇到的一些非正常的状态,
+   有些是可以处理的(可以恢复),有些是处理不了的(不能
+   在程序运行期间进行恢复)
+
+   异常本身有分为两类:
+   a.运行时异常,也叫做未检测异常
+     都是RuntimeExpection的子类
+     特点:JVM不强制要求程序员进行处理,而是希望程序员
+          编码谨慎.
+     举例:
+	NullPointerException	空指针异常
+	ArrayIndexOutOfBoundsException	数组下标越界异常
+	InputMismatchException	输入不匹配异常
+	IllegalArgumentException 非法参数异常
+	...
+
+   b.非运行时异常,也叫做已检测异常
+     都是Expection的子类
+     特点:JVM强制程序员进行处理
+          处理方式
+	  a.try catch	积极处理
+	  b.throws	消极处理
+     举例:
+	InterruptedException	中断异常
+	FileNotFoundException	文件未找到异常
+	IOException		IO异常
+	SqlException		数据库异常
+	...
+
+
+异常的层次结构:
+java.lang.Object
+ |-java.lang.Throwable
+  |-Error
+    StackOverflowError
+  |-Excpetion
+   |-RuntimeException[unchecked]
+	NullPointerException
+	ArrayIndexOutOfBoundsException
+	InputMismatchException
+   InterruptedException
+   FileNotFoundException
+   IOException
+   ...
+
+
+异常处理的两种方式:
+1.积极处理(try catch)
+  语法:
+
+  方式一:(推荐)
+  try{
+	//所有的异常代码都放在这里
+  }catch(异常类型 变量名){
+	//处理代码;
+  }catch(异常类型 变量名){
+	//处理代码;
+  }catch(异常类型 变量名){
+	//处理代码;
+  }finally{
+	//释放资源的代码
+  }
+
+  注:如果多个catch块中的异常有父子类关系,则应该把
+     父类异常写在子类异常的后面!
+
+
+  //方式二:
+  try{
+	//所有的异常代码都放在这里
+  }catch(所有异常的父类 变量名){
+	//处理代码;
+  }
+
+  //方式三:
+  try{
+	//异常A代码;
+  }catch(异常A类型 变量A){
+	//处理代码;
+  }
+  try{
+	//异常B代码;
+  }catch(异常B类型 变量B){
+	//处理代码;
+  }
+  ...
+
+注:如果try块中带了finally块,则不管try块中的代码是否
+   出现异常,finally代码都会被执行,所以finally代码块
+   比较适合做资源释放工作(流的关闭,关闭数据库连接等).
+
+   特例:除非上面代码块中有System.exit(0);语句
+
+
+2.消极处理(throws)
+  语法:
+  修饰符 返回类型 方法名(参数列表) throws 异常类型{
+
+  }
+
+注:如果异常被抛到JVM,则JVM自动终止进程,程序停止.
+
+
+自定义异常:
+程序员自己定义异常类
+----------------------------------------------------
+
+内部类(Inner Class)
+定义:定义在其他类内部的一个类
+
+一般分为四种:
+1.成员内部类(Member Inner Class)
+  是指把内部类当做外部类的一个"成员"存在
+
+  特点:
+  a.可以方位外部类的所有成员
+  b.如果成员内部类中的属性与外部类的属性同名时,
+    外部类.this.同名属性来访问外部类的同名属性.
+  c.如果成员内部类是公开的,则在其他类中,可以通过
+    如下方式来创建成员内部类的对象
+    外部类.内部类 变量名 = 外部类对象.new 内部类类名
+
+
+2.静态内部类(Static Inner Class)
+  是指内部类当做外部类的静态成员存在
+
+  特点:
+  a.可以直接访问外部类所有的静态成员
+  b.如果是公开的静态内部类,可以上升为顶级类
+
+
+3.局部内部类(Local Inner Class)
+  是指把内部类定义在外部类的成员方法中
+  
+  特点:
+  a.可以访问外部类的所有成员
+  b.可以访问所在方法中的final变量
+  c.这个类只能在定义它的方法中使用
+
+
+4.匿名内部类(Anonymous Inner Class)
+  是指一种没有名字的局部内部类
+  特点:同局部内部类
+
+如:
+public class Outer{
+	private String name;
+	
+	//成员内部类
+	修饰符 class 类名 {
+		//自己的属性
+		//自己的方法
+	}
+
+	//静态内部类
+	访问控制修饰符 static class 类名{
+		//自己的属性
+		//自己的方法
+	}
+
+	//外部类的方法
+	public void show(){}
+
+	public void test(int i){
+		final int j = 1;//局部常量
+		//局部内部类
+		class 类名{
+			//自己的属性
+			//自己的方法
+		}
+	}
+}
+
+----------------------------------------------------
+在Java中如何实现C++中的多继承能力?
+
+要利用接口和内部类来实现
+
+见com.corejava.day11.多重继承

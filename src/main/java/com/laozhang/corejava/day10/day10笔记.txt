@@ -1,0 +1,286 @@
+Object
+是所有类的基类,在Java中所有类都是直接或者间接继承与它
+
+常用方法:
+1.getClass()方法
+  
+  public final Class getClass(){}//返回对象的运行时类型
+
+  注:
+  不管一个类实例化了多少个对象,在JVM中Class实例只有一个
+  所以:
+  Book b1 = new Book();
+  Book b2 = new Book();
+  System.out.println(b1.getClass() == b2.getClass());
+  //true
+
+  
+  java.lang.Class类
+  此类是JVM用来描述类的类
+  通过这个Class的实例,可以获取类的所有信息
+  它也是Java反射技术的基础类.
+
+
+Java中获取Class实例的方式:
+1.通过getClass()方法
+  Book b = new Book();
+  Class c = b.getClass();
+
+2.通过类.class属性来获取
+  Class c = Book.class;
+
+3.通过调用Class.forName("类的全限定名");来获取
+  Class c = Class.forName("com.corejava.day10.Book");
+  注:如果传入非法全限定名字符串,会抛出异常
+     java.lang.ClassNotFoundException;
+
+
+2.toString()方法
+  作用:把一个对象转换成某种形式的字符串表示
+  这种形式是
+  类名 + @ + 内存地址(哈希码的16进制)
+
+  注:是要打印一个对象,都会自动调用toString()方法,但是
+     一般情况下,我们都重写此方法,因为原版方法无法满足
+     我们的业务输出要求.
+
+
+3.equals()和hashCode()
+  
+  注:==永远比较的是内存地址,equals()方法默认情况下
+     比较的是内存地址,但是可以重写.
+
+  equals()方法:
+  用来判断两个对象是否相等,默认比较内存地址(等同于==)
+  所以,如果在业务中比较两个对象,就要重写equals()方法.
+
+  子类重写equals()方法:
+  1.自反性
+  2.对称性
+  3.传递性
+  4.一致性
+
+  重写equals()方法的步骤:
+  public boolean equals(Object obj){
+	//自反性
+	if(this == obj){
+		return true;
+	}
+	//非空判断
+	if(obj == null){
+		return false;
+	}
+	//判断类型是否一致
+	if(obj instanceof 类型){
+		//表示类型是一致
+		//强制类型转换
+		类型 s = (类型)obj;
+		//一一比较属性值
+		...
+	}else{
+		return false;
+	}
+  }
+
+注:
+1)在equals()方法中,基本类型使用==比较,对象类型使用它
+  本身的equals()方法
+2)String和Date类都已近重写了equals()方法
+
+
+4.hashCode()方法
+  作用:给采用了哈希算法的集合提高性能的
+  此方法的返回类型int,这个值就是这个对象的哈希码
+
+  要求:
+  a.相等对象(equals()方法返回true),哈希值一定相等
+  b.不等对象(equals()方法返回false),哈希值尽可能保证不同
+
+注:出现在equals()方法中的属性必须出现在hashCode()中,
+   也就是说两个方法属性是一致的,
+   所以我们重写的时候,两个方法都是一起重写的.
+
+
+5.clone()方法
+  创建对象的一个副本,Objec中的clone()方法是一种
+  浅层复制(浅表复制,浅拷贝)
+
+  浅拷贝:
+  把基本类型的属性拷贝一份给新的对象
+  对象类型的属性还是与原对象共享.
+  注:String和Date除外
+
+  深拷贝:
+  把对象中所有的属性全部拷贝一份给新的对象,不存在
+  共享的属性
+  深拷贝需要程序员自己编码实现
+
+  要做克隆,必须满足的条件:
+  1.重写clone()方法,并把修饰符从protected变成public
+  2.需要做克隆的类必须实现java.lang.Cloneable接口
+
+  注:Object中的clone()方法修饰符是protected,只有子类
+     才可以访问.
+
+
+6.finalize()方法
+  作用:当JVM的垃圾回收器回收一个对象时,会先调用这个
+       对象的finalize()方法.
+-----------------------------------------------------
+
+基本类型和各自的包装类(基本类型的对象类型)
+byte -> Byte
+short -> Short
+int -> Integer
+long -> Long
+float -> Float
+double -> Double
+char -> Character
+boolean -> Boolean
+
+以上6种数字类型的包装类的共同父类:java.lang.Number
+
+Number类是一个抽象类
+方法:(把包装类转换成基本类型)
+
+byteValue() 
+          以 byte 形式返回指定的数值。 
+doubleValue() 
+          以 double 形式返回指定的数值。 
+floatValue() 
+          以 float 形式返回指定的数值。 
+intValue() 
+          以 int 形式返回指定的数值。 
+longValue() 
+          以 long 形式返回指定的数值。 
+shortValue() 
+          以 short 形式返回指定的数值。 
+
+如:int i = Integer.intValue();
+
+在JDK1.5开始,基本类型和包装类可以自动解封箱
+(Auto Boxing/UnBoxing)
+
+如:Integer i1 = 5;//自动封箱
+   Integer i2 = new Integer(5);//正常的构建方法
+   int i3 = i2;//自动解箱
+
+---------------------------------------------------
+
+数字型:
+Byte Short Integer Long Float Double
+
+大数字类型:
+java.math.BigInteger	大整数
+java.math.BigDecimal	大浮点数
+
+构造方法:
+public BigInteger(String datas){}
+public BigInteger(byte[] val){}
+
+常量:
+ONE	代表1
+ZERO	代表0
+TEN	代表10
+
+方法:
+add(BigInteger val)//加法
+multiply(BigInteger val)//乘法
+subtract(BigInteger val)//减法
+divide(BigInteger val) //除法
+
+
+Integer
+构造:
+public Integer(int val)
+public Integer(String val)
+
+常用方法:
+valueOf(int i)	静态方法,把基本类型转换成包装类
+toString(int i) 静态方法,被基本类型转换成字符串
+parseInt(String str) 静态方法,把字符串解析成int类型
+intValue()	非静态方法,返回该包装类对应的基本类型
+
+toBinaryString(int i)
+静态方法,把基本类型转换成它的二进制字符串表示形式
+
+toHexString(int i)
+静态方法,把基本类型转换成它的16进制字符串表示形式
+
+
+格式化数字:
+java.text.NumberFormat
+
+常用方法:
+public static NumberFormat getInstance()
+返回当前默认语言环境下的通用数值格式
+
+public static NumberFormat getInstance(Locale inLocale) 
+返回指定语言环境下的通用数值格式
+
+public static NumberFormat getCurrencyInstance() 
+返回当前默认语言环境的货币格式
+
+public static NumberFormat getCurrencyInstance(Locale inLocale)
+返回指定语言环境的货币格式
+
+public static int getMinimumIntegerDigits() 
+返回数的整数部分所允许的最小位数
+
+public void setMaximumIntegerDigits(int newValue)
+设置整数部分所允许的最大位数
+
+public void setMaximumFractionDigits(int newValue)
+设置小数部分所允许的最大位数
+
+//格式化规范
+public String format(double d)
+public String format(long l)
+
+---------------------------------------------------
+字符型
+Character
+
+如:
+char c = 'A';//65
+int i = c + 1;//66
+char c3 = '0';//48
+char c4 = 'a';//97
+
+构造方法:
+public Character(char c)
+
+常用方法:
+isLetter(char c)	判断字符是否是字母
+isDigit(char c)		判断字符是否是数字
+isUpperCase(char c)	判断字符是否是大写字母
+isLowerCase(char c)	判断字符是否是小写字母
+isWhiteSpace(char c)	判断字符是否是空白字符
+...
+toString(char c)	返回一个指定char值的字符串
+----------------------------------------------------
+Boolean
+构造方法:
+public Boolean(boolean b)
+public Boolean(String str)
+
+常用方法:
+parseBoolean(String s)
+//将字符串参数解析为 boolean 值
+----------------------------------------------------
+
+字符串的处理
+字符,字符串,字符数组之间的相互转换操作
+
+String str = "JACK";
+//通过字符串得到字符数组
+char[] arr = str.toCharArray();
+
+//把字符数组转换成字符串
+String s = new String(arr);
+
+//通过字符串得到字符
+char c = str.charAt(0);//得到字符 J
+
+//把字符转换成字符串
+String s = Character.toString(c);
