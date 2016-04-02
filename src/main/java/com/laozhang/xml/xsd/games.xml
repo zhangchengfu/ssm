@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:games xmlns:tns="http://www.example.org/games_0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.example.org/games_0_1 games_0_1.xsd ">
+	<tns:game id="1">
+		<tns:name>魔兽世界</tns:name>
+		<tns:company>暴雪</tns:company>
+		<tns:year>2000</tns:year>
+		<tns:type>RPG</tns:type>
+	</tns:game>
+	<tns:game id="2">
+		<tns:name>使命召唤</tns:name>
+		<tns:company>EA</tns:company>
+		<tns:year>2013</tns:year>
+		<tns:type>FPS</tns:type>
+	</tns:game>
+</tns:games>

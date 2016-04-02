@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 注释:指定DTD所在位置 <!DOCTYPE books SYSTEM "books_0_1.dtd" > -->
+
+<books>
+	<book id="1">
+		<name>生死疲劳</name>
+		<author>莫言</author>
+		<price>18.5</price>
+	</book>
+	<book id="2">
+		<name>Thinking in JAVA</name>
+		<author>Ekel</author>
+		<price>78.5</price>
+		<bookinfo>
+			<publish_house>机械工业出版社</publish_house>
+			<publish_date>2005-08-19</publish_date>
+			<pages>780</pages>
+			<description>一本以面向对象来分析和设计的JAVA书籍</description>
+		</bookinfo>
+	</book>
+	<book id="3">
+		<name>蛙</name>
+		<author>莫言</author>
+		<price>38.5</price>
+	</book>
+</books>

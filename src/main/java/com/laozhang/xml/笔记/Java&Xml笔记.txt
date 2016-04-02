@@ -1,0 +1,306 @@
+Java&XML
+
+学习目标:
+1.可以写一个格式良好的XML
+2.可以分别使用两种规范来约束XML
+3.可以写一个合法的XML文档
+4.可以使用Java来解析XML内容
+
+----------------------------------------------------
+XML:可拓展的标记语言
+
+HTML:超文本标记语言
+     
+     HTTP:超文本传输协议
+
+特点:
+1.Xml中的标记是不固定的,
+  而HTML中是固定的,由W3C组织来制定的,由浏览器来解析
+2.Xml是一种元语言,可以用来描述其他语言的语言
+
+例如
+HTML标记:
+<html>,<head>,<body>,<title>,<div>,<ul>,<b>,<h1>
+...
+
+注:
+HTML主要侧重于数据的展现
+XML主要侧重于数据的存储
+
+
+XML的应用:
+1.电子商务的数据基础
+2.跨平台的数据交换
+3.远程调用
+4.资源配置
+...
+
+----------------------------------------------------
+
+XML的语法:
+首先,要保证你的XML是一个格式良好的XML,可以通过浏览器
+解析成功.
+
+1.第一句话
+  <?xml version="1.0" encoding="UTF-8"?>
+2.标记用<>括起来
+3.标记有开头,就有结尾,一定要成对出现,如<a></a>
+4.标记中可以含有属性,同一个标记中属性是唯一的,不能同名
+  属性必须是key=value,值可以使用双引号或者单引号括起来
+  如:<cd id="001" type='摇滚'></cd>
+5.标记可以嵌套使用,但是不能相互包含
+  <a><b></b></a>  //正确
+  <a><b></a></b>  //错误
+6.标记名可以是任意的字母,数字或中文
+7.对于任何一个XML文件来说,根标记只有一个
+---------------------------------------------------
+
+XML的约定
+
+目的是在应用系统中,制定好一个XML的文档结构模板,
+包含标记名称,标记的出现顺序
+
+W3C制定了两种不同的技术来约束XML文档:
+1.DTD
+2.SCHEMA
+
+DTD:文档类型定义
+它是用来约束XML文档中的标记以及其层次结构
+
+满足DTD要求的XML,叫做合法的XML文档
+
+注:
+合法的XML文档一定是格式良好的
+格式良好的XML文档不一定是合法的
+
+DTD的语法:
+<!ELEMENT games (game)+>
+<!ELEMENT game (name,company,year,type)>
+<!ATTLIST game id CDATA #REQUIRED>
+<!ATTLIST game isFree CDATA #IMPLIED>
+<!ELEMENT name #PCDATA>
+<!ELEMENT company #PCDATA>
+<!ELEMENT year #PCDATA>
+<!ELEMENT type #PCDATA>
+---------------------------------------------------
+
+对于XML而言,元素和属性如何选择?
+元素和属性都可以用来存储数据,但是,元素具有拓展性,
+属性不可以.所以在设计的时候,尽量使用元素.
+
+注:属性是依附于元素存在的
+---------------------------------------------------
+
+DTD的缺点:
+a.DTD不能自定义类型
+b.DTD的内置类型太少,只有#CDATA/#PCDATA
+c.DTD对元素数量的限定不够精确
+d.DTD的语法是全新的,与XML本身没有关系
+---------------------------------------------------
+
+基于以上DTD的缺点,W3C制定了新的规范,
+这种规范叫做:SCHEMA
+
+Schema的出现就是为了代替DTD,它修复了DTD所有的缺点,
+并且满足DTD的所有功能.
+更重要的一点是:Schema采用了XML的语法,只不过它的标记
+是固定的.
+----------------------------------------------------
+Schema常用标记有:
+元素 				解释
+schema 				定义 schema 的根元素。
+attribute 			定义一个属性。
+sequence 			要求子元素必须按顺序出现。每个子元素可出现 0 到任意次数。
+group 				定义在复杂类型定义中使用的元素组。
+complexType 			定义复杂类型。
+simpleType 			定义一个简单类型，规定约束以及关于属性或仅含文本的元素的值的信息。
+
+attributeGroup 			定义在复杂类型定义中使用的属性组。
+complexContent 			定义对复杂类型（包含混合内容或仅包含元素）的扩展或限制。
+documentation 			定义 schema 中的文本注释。
+element 			定义元素。
+extension 			扩展已有的 simpleType 或 complexType 元素。
+field 				规定 XPath 表达式，该表达式规定用于定义标识约束的值。
+import 				向一个文档添加带有不同目标命名空间的多个 schema。
+include				向一个文档添加带有相同目标命名空间的多个 schema。
+key 				指定属性或元素值（或一组值）必须是指定范围内的键。
+keyref 				规定属性或元素值（或一组值）对应指定的 key 或 unique 元素的值。
+list 				把简单类型定义为指定数据类型的值的一个列表。
+notation 			描述 XML 文档中非 XML 数据的格式。
+redefine 			重新定义从外部架构文件中获取的简单和复杂类型、组和属性组。
+restriction 			定义对 simpleType、simpleContent 或 complexContent 的约束。
+all 				规定子元素能够以任意顺序出现，每个子元素可出现零次或一次。
+selector 			指定 XPath 表达式，该表达式为标识约束选择一组元素。
+simpleContent			包含对 complexType 元素的扩展或限制且不包含任何元素。
+union 				定义多个 simpleType 定义的集合。
+unique 				指定属性或元素值（或者属性或元素值的组合）在指定范围内必须是唯一的。
+----------------------------------------------------
+
+Java XML解析
+
+SUN API中提供了两种解析方式
+
+1)SAX解析
+  全称:Simple API for XML Parser(XML解析的简单API)
+
+  特点:
+  a.SAX解析效率很高,不占用内存资源
+  b.SAX解析是基于事件驱动的方式来解析XML文档,每次
+    去读标记时,就会触发相应的事件
+  c.SAX解析不会驻留内存,事件完成,就会结束.如果你要
+    得到文档中某一个标记的值,只能从头读取到尾部
+  d.SAX解析不支持XML文档的写入操作
+
+
+SAX解析API:
+javax.xml.parsers包
+
+类
+SAX抽象工厂类:SAXParserFactory
+
+方法:
+    public static SAXParserFactory newInstance()
+    public abstract SAXParser newParser()
+
+
+抽象产品:SAXParser
+方法:
+    public void parse(InputStream in,DefaultHandler dh)
+
+
+事件处理类:DefaultHandler
+
+针对XML的处理,只需要重写5个方法:
+
+startDocument();
+//只要读到XML文档中的处理指令(<?开始),parse方法中
+  就会回调dh中的startDocument()方法
+
+startElement(String url,String localName,String qName,Attributes attr);
+//只要读取到<,就会触发startElement();
+
+characters(char[] ch, int start, int length) 
+//表示读到两个标记之间的文本,就会触发
+
+endElement(String uri, String localName, String qName)
+//只要读到</,表示元素结束
+
+endDocument();
+//文档结束
+----------------------------------------------------
+
+2)DOM解析
+
+全称:文档对象模型
+
+特点:
+a.DOM解析是采用"文档树"的方式,会一次性把整个XML
+  加载进内存,形成一颗倒置的文档树,根元素就是"树根"
+b.DOM方式比较消耗系统资源,效率不高,特别是加载大型XML
+  文档的时候
+c.DOM支持读写操作
+
+
+相关API
+DOM文档工厂类:
+javax.xml.parsers.DocumentBuilderFactory
+
+方法:
+public static DocumentBuilderFactory newInstance()
+public abstract DocumentBuilder newDocumentBuilder()
+
+DOM文档类:
+javax.xml.parsers.DocumentBuilder
+
+方法:
+public Document parse(InputStream in)
+//把XML文档转换成DOM文档树,返回的Document就是指
+这个文档树的根元素
+
+DOM解析的编程步骤:
+//获取DOM文档工厂
+DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//通过工厂获取DOM文档
+DocumentBuilder builder = factory.newDocumentBuilder();
+//获取输入流
+InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream("books.xml");
+//做DOM解析
+Document doc = builder.parse(in);
+
+//如何解析这个文档树?
+
+在DOM的世界里,一切皆是"节点"(Node)
+
+在W3C的DOM模型
+
+包:org.w3c.dom包
+
+接口:
+Node			抽象节点
+  |- Document		代表整个文档树
+  |- Element		代表元素,也就是使用<>括起来
+  |- Attr		代表元素中的属性
+  |- CharacterData	代表文本节点
+	|- Text		代表元素之间的文本内容节点
+	|- Comment	代表注释
+	|- CDATASection	代表CDATA类型元素的节点
+  |- Entity		代表实体
+  ...
+
+注:不管是Document/Element/Attr都可以称做Node(节点)!
+
+常用方法:
+1)查询方法
+  getParentNode()	Node		获取父节点
+  getChildNodes()	NodeList	获取当前节点的所有子节点
+  getNextSibling	Node		获取当前节点的后一个兄弟节点
+  getPreviousSibling    Node		获取当前节点的前一个兄弟节点
+  getFirstChild()	Node		获取此节点的第一个子节点
+  getLastChild()        Node		获取此节点的最后一个子节点
+
+  getNodeName()
+  getNodeValue()
+  //获取节点的值,Text/Attr/Comment等几个节点才有值.
+
+  添加节点的方法
+  appendChild(Node node)		
+
+
+Document的方法:
+public Element getDocumentElement()
+//获取根元素的节点
+
+Element的方法:
+public NodeList getElementsByTagName(String tagName)
+public String getAttribute(String attrName)
+
+...
+----------------------------------------------------
+
+如何把内存中的DOM树,转换成本地XML文件?
+
+W3C DOM用来做持久化XML的类和方法:
+
+类:
+javax.xml.transform.TransformerFactory
+javax.xml.transform.Transformer
+javax.xml.transform.OutputKeys(中间有一个常量INDENT)
+
+方法:
+	setOutputProperty(String key,String value)
+	transform(Source source,Result result)
+
+Source接口
+	我们使用DOMSource实现类
+
+Result接口
+	我们使用StreamResult实现类
+
+---------------------------------------------------
+
+第三方的DOM模型实现:
+
+1.DOM4J
+2.JDOM
+
+它们都提供了比W3C更好的API

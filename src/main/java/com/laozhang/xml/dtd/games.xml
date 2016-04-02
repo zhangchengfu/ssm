@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE games SYSTEM "games_0_1.dtd" >
+<games>
+	<game id="1">
+		<name>魔兽世界</name>
+		<!-- 在这里添加注释 -->
+		<company>暴雪</company>
+		<year>2003</year>
+		<type>MMORPG</type>
+	</game>
+	<game id="2">
+		<name>孤岛危机3</name>
+		<company>EA</company>
+		<year>2013</year>
+		<type>FPS</type>
+	</game>
+</games>
