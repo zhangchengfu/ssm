@@ -44,6 +44,8 @@ public class IOStream {
 	@Autowired
 	private IUserService service;
 	
+	private static String uploadName =  "";
+	
 	@RequestMapping(value = "toUploadFileJsp", method = RequestMethod.GET)
 	public ModelAndView toUploadFileJsp(HttpServletRequest request, HttpServletResponse response) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -83,7 +85,7 @@ public class IOStream {
 					String fileName = file.getOriginalFilename();
 					String[] str = fileName.split("\\.");
 					String suffixName = "." + str[str.length - 1];
-					String uploadName =  "";
+					
 					//重新命名文件名
 					synchronized (uploadName) {
 						uploadName = String.valueOf((new Date()).getTime());
