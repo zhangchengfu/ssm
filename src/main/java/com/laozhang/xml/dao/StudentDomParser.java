@@ -105,7 +105,7 @@ public class StudentDomParser {
 	public static void main(String[] args) {
 		StudentDomParser sdp = new StudentDomParser();
 		List<Student> students = sdp
-				.getStudentFromXml("com/xml/dtd/students.xml");
+				.getStudentFromXml("/com/laozhang/xml/dtd/students.xml");
 		for (Student s : students) {
 			System.out.println(s);
 		}
